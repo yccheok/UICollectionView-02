@@ -11,5 +11,12 @@ import CoreData
 
 @objc(NSPlainNote)
 public class NSPlainNote: NSManagedObject {
-
+    convenience init(context: NSManagedObjectContext, plainNote: PlainNote) {
+        self.init(context: context)
+        
+        self.title = plainNote.title
+        self.body = plainNote.body
+        self.pinned = plainNote.pinned
+        self.uuid = plainNote.uuid
+    }
 }
