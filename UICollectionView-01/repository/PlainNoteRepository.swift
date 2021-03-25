@@ -6,3 +6,20 @@
 //
 
 import Foundation
+
+class PlainNoteRepository {
+    public static let INSTANCE = PlainNoteRepository()
+    
+    private init() {
+    }
+    
+    func insertAsync(_ plainNote: PlainNote) {
+        let coreDataStack = CoreDataStack.INSTANCE
+        let backgroundContext = coreDataStack.backgroundContext
+        
+        backgroundContext.perform {
+            let _ = NSPlainNote(context: backgroundContext, plainNote: plainNote)
+            RepositoryUtils.saveContextIfPossible(backgroundContext)
+        }
+    }
+}
