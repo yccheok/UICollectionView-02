@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="v5l-tP-NAw">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="UICollectionView_01" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="DaP-Ym-7OP">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewLayout key="collectionViewLayout" id="XJK-DB-5An"/>
+                                <cells/>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="DaP-Ym-7OP" secondAttribute="bottom" id="ONf-Ef-ifD"/>
+                            <constraint firstItem="DaP-Ym-7OP" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="VTu-CV-pwf"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="DaP-Ym-7OP" secondAttribute="trailing" id="WxM-Ei-l8B"/>
+                            <constraint firstItem="DaP-Ym-7OP" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fDz-zD-S2q"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="lvM-p0-cZ4">
+                        <rightBarButtonItems>
+                            <barButtonItem title="Layout" id="aRf-CG-Yym">
+                                <connections>
+                                    <action selector="layoutButtonPressed:" destination="BYZ-38-t0r" id="vXV-nL-Sj7"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="UnPin" id="1mu-S8-JKx">
+                                <connections>
+                                    <action selector="unpinButtonPressed:" destination="BYZ-38-t0r" id="CLJ-xg-If6"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Pin" id="CGf-2Y-JaP">
+                                <connections>
+                                    <action selector="pinButtonPressed:" destination="BYZ-38-t0r" id="PtV-vu-akV"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="DaP-Ym-7OP" id="p7J-Oy-qPK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1955.072463768116" y="52.901785714285715"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="QpH-gu-kDA">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="v5l-tP-NAw" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Yqi-P5-h65">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="vpi-Ms-a22"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="97i-RN-FyE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1044.9275362318842" y="52.901785714285715"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
