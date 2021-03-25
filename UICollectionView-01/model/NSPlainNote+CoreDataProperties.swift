@@ -16,10 +16,10 @@ extension NSPlainNote {
         return NSFetchRequest<NSPlainNote>(entityName: "NSPlainNote")
     }
 
+    @NSManaged public var title: String?
     @NSManaged public var body: String?
     @NSManaged public var pinned: Bool
-    @NSManaged public var title: String?
-    @NSManaged public var uuid: UUID?
+    @NSManaged public var uuid: UUID
 
 }
 

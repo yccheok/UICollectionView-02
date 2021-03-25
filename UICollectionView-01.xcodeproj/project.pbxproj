@@ -15,6 +15,7 @@
 		0D02E6CB25EBE1000061A09A /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02E6CA25EBE1000061A09A /* UIView+Extensions.swift */; };
 		0D02E6CF25EC0D280061A09A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02E6CE25EC0D280061A09A /* Layout.swift */; };
 		0D4AFBE225EA986C00ED9E75 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4AFBE125EA986C00ED9E75 /* Log.swift */; };
+		0D7CB9B4260C926D00773160 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CB9B3260C926D00773160 /* CoreDataStack.swift */; };
 		0D8CB53625EA783200E516FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53525EA783200E516FC /* AppDelegate.swift */; };
 		0D8CB53825EA783200E516FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53725EA783200E516FC /* SceneDelegate.swift */; };
 		0D8CB53A25EA783200E516FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53925EA783200E516FC /* ViewController.swift */; };
@@ -28,6 +29,9 @@
 		0DC0027A25ED11DB0052B619 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC0027925ED11DB0052B619 /* String+Extensions.swift */; };
 		0DC36D4E25EE61110002AF63 /* UIWindow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC36D4D25EE61110002AF63 /* UIWindow+Extensions.swift */; };
 		0DC36D5125EE68A50002AF63 /* CaseIterable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC36D5025EE68A50002AF63 /* CaseIterable+Extensions.swift */; };
+		0DC54E5D260C80F800B2FD72 /* wenote.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0DC54E5B260C80F800B2FD72 /* wenote.xcdatamodeld */; };
+		0DC54E62260C841100B2FD72 /* NSPlainNote+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC54E60260C841100B2FD72 /* NSPlainNote+CoreDataClass.swift */; };
+		0DC54E63260C841100B2FD72 /* NSPlainNote+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC54E61260C841100B2FD72 /* NSPlainNote+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +43,7 @@
 		0D02E6CA25EBE1000061A09A /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		0D02E6CE25EC0D280061A09A /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		0D4AFBE125EA986C00ED9E75 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		0D7CB9B3260C926D00773160 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		0D8CB53225EA783200E516FC /* UICollectionView-01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UICollectionView-01.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8CB53525EA783200E516FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D8CB53725EA783200E516FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -54,6 +59,9 @@
 		0DC0027925ED11DB0052B619 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		0DC36D4D25EE61110002AF63 /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
 		0DC36D5025EE68A50002AF63 /* CaseIterable+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Extensions.swift"; sourceTree = "<group>"; };
+		0DC54E5C260C80F800B2FD72 /* wenote.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = wenote.xcdatamodel; sourceTree = "<group>"; };
+		0DC54E60260C841100B2FD72 /* NSPlainNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPlainNote+CoreDataClass.swift"; sourceTree = "<group>"; };
+		0DC54E61260C841100B2FD72 /* NSPlainNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPlainNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +107,14 @@
 			path = log;
 			sourceTree = "<group>";
 		};
+		0D7CB9B2260C91EE00773160 /* repository */ = {
+			isa = PBXGroup;
+			children = (
+				0D7CB9B3260C926D00773160 /* CoreDataStack.swift */,
+			);
+			path = repository;
+			sourceTree = "<group>";
+		};
 		0D8CB52925EA783200E516FC = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +134,7 @@
 		0D8CB53425EA783200E516FC /* UICollectionView-01 */ = {
 			isa = PBXGroup;
 			children = (
+				0D7CB9B2260C91EE00773160 /* repository */,
 				0D02E6C925EBE0CF0061A09A /* extension */,
 				0D02E6B625EB762B0061A09A /* view */,
 				0D4AFBE025EA985B00ED9E75 /* log */,
@@ -138,7 +155,10 @@
 		0D8CB54B25EA7C4800E516FC /* model */ = {
 			isa = PBXGroup;
 			children = (
+				0DC54E61260C841100B2FD72 /* NSPlainNote+CoreDataProperties.swift */,
+				0DC54E60260C841100B2FD72 /* NSPlainNote+CoreDataClass.swift */,
 				0D8CB54C25EA7C5600E516FC /* PlainNote.swift */,
+				0DC54E5B260C80F800B2FD72 /* wenote.xcdatamodeld */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -236,13 +256,17 @@
 			files = (
 				0D8CB55125EA881C00E516FC /* Utils.swift in Sources */,
 				0D8CB54D25EA7C5600E516FC /* PlainNote.swift in Sources */,
+				0DC54E5D260C80F800B2FD72 /* wenote.xcdatamodeld in Sources */,
+				0D7CB9B4260C926D00773160 /* CoreDataStack.swift in Sources */,
 				0D02E6CB25EBE1000061A09A /* UIView+Extensions.swift in Sources */,
 				0D02E6C225EBC57B0061A09A /* NoteHeader.swift in Sources */,
 				0DC0027A25ED11DB0052B619 /* String+Extensions.swift in Sources */,
 				0D4AFBE225EA986C00ED9E75 /* Log.swift in Sources */,
 				0D8CB53A25EA783200E516FC /* ViewController.swift in Sources */,
 				0DC36D5125EE68A50002AF63 /* CaseIterable+Extensions.swift in Sources */,
+				0DC54E62260C841100B2FD72 /* NSPlainNote+CoreDataClass.swift in Sources */,
 				0DC36D4E25EE61110002AF63 /* UIWindow+Extensions.swift in Sources */,
+				0DC54E63260C841100B2FD72 /* NSPlainNote+CoreDataProperties.swift in Sources */,
 				0D02E6C625EBCB970061A09A /* NoteSection.swift in Sources */,
 				0D02E6CF25EC0D280061A09A /* Layout.swift in Sources */,
 				0D8CB53625EA783200E516FC /* AppDelegate.swift in Sources */,
@@ -449,6 +473,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		0DC54E5B260C80F800B2FD72 /* wenote.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0DC54E5C260C80F800B2FD72 /* wenote.xcdatamodel */,
+			);
+			currentVersion = 0DC54E5C260C80F800B2FD72 /* wenote.xcdatamodel */;
+			path = wenote.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0D8CB52A25EA783200E516FC /* Project object */;
 }
