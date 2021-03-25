@@ -10,6 +10,9 @@ import CoreData
 class CoreDataStack {
     public static let INSTANCE = CoreDataStack()
     
+    private init() {
+    }
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "wenote")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -17,6 +20,23 @@ class CoreDataStack {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        
+        // TODO:
+        //container.viewContext.automaticallyMergesChangesFromParent = false
+        //container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        //container.viewContext.undoManager = nil
+        //container.viewContext.shouldDeleteInaccessibleFaults = true
+        
         return container
+    }()
+    
+    lazy var backgroundContext: NSManagedObjectContext = {
+        let backgroundContext = persistentContainer.newBackgroundContext()
+        
+        // TODO:
+        //backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        //backgroundContext.undoManager = nil
+        
+        return backgroundContext
     }()
 }
