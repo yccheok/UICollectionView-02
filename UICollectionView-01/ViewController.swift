@@ -10,8 +10,8 @@ import CoreData
 
 class ViewController: UIViewController {
     
-    typealias DataSource = UICollectionViewDiffableDataSource<NoteSection, PlainNote>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<NoteSection, PlainNote>
+    typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     
     private static let padding = CGFloat(8.0)
     private static let minListHeight = CGFloat(44.0)
@@ -19,8 +19,8 @@ class ViewController: UIViewController {
     private static let NOTE_CELL = "NOTE_CELL"
     private static let NOTE_HEADER = "NOTE_HEADER"
     
-    private var pinnedNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "pinned_plain_note")
-    private var normalNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "normal_plain_note")
+    //private var pinnedNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "pinned_plain_note")
+    //private var normalNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "normal_plain_note")
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     
     var dataSource: DataSource?
     
-    var plainNoteProvider: PlainNoteProvider!
+    var nsPlainNoteProvider: NSPlainNoteProvider!
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -56,31 +56,19 @@ class ViewController: UIViewController {
     }
     
     @IBAction func pinButtonPressed(_ sender: Any) {
-        if normalNotes.isEmpty {
-            return
-        }
-        
-        let sourceIndex = Int.random(in: 0..<normalNotes.count)
-        let destIndex = Int.random(in: 0...pinnedNotes.count)
-        var source = normalNotes[sourceIndex]
-        source.pinned = true
-        pinnedNotes.insert(source, at: destIndex)
-        normalNotes.remove(at: sourceIndex)
-        applySnapshot(true)
+        let normalNSPlainNotes = nsPlainNoteProvider.getNormalNSPlainNotes()
+        let sourceIndex = Int.random(in: 0..<normalNSPlainNotes.count)
+        let normalNSPlainNote = normalNSPlainNotes[sourceIndex]
+        let objectID = normalNSPlainNote.objectID
+        NSPlainNoteRepository.INSTANCE.updatePinned(objectID, true)
     }
     
     @IBAction func unpinButtonPressed(_ sender: Any) {
-        if pinnedNotes.isEmpty {
-            return
-        }
-        
-        let sourceIndex = Int.random(in: 0..<pinnedNotes.count)
-        let destIndex = Int.random(in: 0...normalNotes.count)
-        var source = pinnedNotes[sourceIndex]
-        source.pinned = false
-        normalNotes.insert(source, at: destIndex)
-        pinnedNotes.remove(at: sourceIndex)
-        applySnapshot(true)
+        let pinnedNSPlainNotes = nsPlainNoteProvider.getPinnedNSPlainNotes()
+        let sourceIndex = Int.random(in: 0..<pinnedNSPlainNotes.count)
+        let pinnedNSPlainNote = pinnedNSPlainNotes[sourceIndex]
+        let objectID = pinnedNSPlainNote.objectID
+        NSPlainNoteRepository.INSTANCE.updatePinned(objectID, false)
     }
     
     override func viewDidLoad() {
@@ -91,7 +79,7 @@ class ViewController: UIViewController {
         setupDataSource()
         applySnapshot(false)
         
-        setupPlainNoteProvider()
+        setupNSPlainNoteProvider()
     }
 
     private func setupCollectionView() {
@@ -226,7 +214,7 @@ class ViewController: UIViewController {
     private func setupDataSource() {
         let dataSource = DataSource(
             collectionView: collectionView,
-            cellProvider: { [weak self] (collectionView, indexPath, plainNote) -> UICollectionViewCell? in
+            cellProvider: { [weak self] (collectionView, indexPath, objectID) -> UICollectionViewCell? in
                 
                 guard let self = self else { return nil }
                 
@@ -236,7 +224,11 @@ class ViewController: UIViewController {
                     return nil
                 }
                 
-                noteCell.setup(plainNote)
+                //guard let nsPlainNote = try? CoreDataStack.INSTANCE.persistentContainer.viewContext.existingObject(with: objectID) as? NSPlainNote else { return nil }
+                guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else { return nil }
+
+                // TODO: Conversion required?
+                noteCell.setup(nsPlainNote.toPlainNote())
                 
                 noteCell.updateLayout(self.layout)
                 
@@ -260,11 +252,11 @@ class ViewController: UIViewController {
                 return nil
             }
             
-            let noteSection = dataSource.snapshot().sectionIdentifiers[indexPath.section]
+            let noteSection = self.nsPlainNoteProvider.getNoteSection(indexPath.section)
 
             noteHeader.setup(noteSection)
-            
-            if self.pinnedNotes.isEmpty {
+
+            if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
                 noteHeader.hide()
             } else {
                 noteHeader.show()
@@ -276,62 +268,44 @@ class ViewController: UIViewController {
         self.dataSource = dataSource
     }
     
-    private func setupPlainNoteProvider() {
-        self.plainNoteProvider = PlainNoteProvider(self)
-        _ = self.plainNoteProvider.fetchedResultsController
-        
-        if let sections = self.plainNoteProvider.fetchedResultsController.sections {
-            for section in sections {
-                print("setupPlainNoteProvider section --> \(section.name)")
-                print("setupPlainNoteProvider section --> \(section.indexTitle)")
-            }
-        }
-
-        print("setupPlainNoteProvider SECTION --> \(self.plainNoteProvider.fetchedResultsController.sections?.count)")
-        print("setupPlainNoteProvider OBJECTS --> \(self.plainNoteProvider.fetchedResultsController.fetchedObjects?.count)")
+    private func setupNSPlainNoteProvider() {
+        self.nsPlainNoteProvider = NSPlainNoteProvider(self)
+        _ = self.nsPlainNoteProvider.fetchedResultsController
     }
     
     private func savePlainNotesToCoreData() {
+        let pinnedNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "pinned_plain_note")
+        let normalNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "normal_plain_note")
+        
         for pinnedNote in pinnedNotes {
-            PlainNoteRepository.INSTANCE.insertAsync(pinnedNote)
+            NSPlainNoteRepository.INSTANCE.insertAsync(pinnedNote)
         }
         
         for normalNote in normalNotes {
-            PlainNoteRepository.INSTANCE.insertAsync(normalNote)
+            NSPlainNoteRepository.INSTANCE.insertAsync(normalNote)
         }
     }
     
     private func deletePlainNotesFromCoreData() {
-        PlainNoteRepository.INSTANCE.deleteAllAsync()
-    }
-    
-    private func applySnapshot(_ animatingDifferences: Bool) {
-        var snapshot = Snapshot()
-        
-        if !pinnedNotes.isEmpty {
-            let noteSection = NoteSection.pin
-            snapshot.appendSections([noteSection])
-            snapshot.appendItems(pinnedNotes, toSection: noteSection)
-        }
-        
-        if !normalNotes.isEmpty {
-            let noteSection = NoteSection.normal
-            snapshot.appendSections([noteSection])
-            snapshot.appendItems(normalNotes, toSection: noteSection)
-        }
-        
-        dataSource?.apply(snapshot, animatingDifferences: animatingDifferences) { [weak self] in
-            guard let self = self else { return }
-            // As a workaround to update Pin icon.
-            self.collectionView.reloadData()
-        }
+        NSPlainNoteRepository.INSTANCE.deleteAllAsync()
     }
 }
 
 extension ViewController: NSFetchedResultsControllerDelegate {
-    /// Whenever the `NSFetchedResultsController` data changes, reload the table view data with animations
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("controllerDidChangeContent SECTION --> \(self.plainNoteProvider.fetchedResultsController.sections?.count)")
-        print("controllerDidChangeContent OBJECTS --> \(self.plainNoteProvider.fetchedResultsController.fetchedObjects?.count)")
+    func controller(_ fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshotReference: NSDiffableDataSourceSnapshotReference) {
+        DispatchQueue.main.async {
+            // TODO: weak self?
+            
+            guard let dataSource = self.dataSource else {
+                return
+            }
+            
+            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+
+            dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+            }
+        }
     }
 }
