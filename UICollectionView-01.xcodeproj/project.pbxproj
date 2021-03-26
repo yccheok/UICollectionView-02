@@ -17,6 +17,7 @@
 		0D4AFBE225EA986C00ED9E75 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4AFBE125EA986C00ED9E75 /* Log.swift */; };
 		0D4EE9BB260CCDAE00C0845B /* PlainNoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9BA260CCDAE00C0845B /* PlainNoteRepository.swift */; };
 		0D4EE9BE260CE7BC00C0845B /* RepositoryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9BD260CE7BC00C0845B /* RepositoryUtils.swift */; };
+		0D4EE9C2260CF11900C0845B /* PlainNoteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9C1260CF11900C0845B /* PlainNoteProvider.swift */; };
 		0D7CB9B4260C926D00773160 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CB9B3260C926D00773160 /* CoreDataStack.swift */; };
 		0D8CB53625EA783200E516FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53525EA783200E516FC /* AppDelegate.swift */; };
 		0D8CB53825EA783200E516FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53725EA783200E516FC /* SceneDelegate.swift */; };
@@ -47,6 +48,7 @@
 		0D4AFBE125EA986C00ED9E75 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		0D4EE9BA260CCDAE00C0845B /* PlainNoteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainNoteRepository.swift; sourceTree = "<group>"; };
 		0D4EE9BD260CE7BC00C0845B /* RepositoryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryUtils.swift; sourceTree = "<group>"; };
+		0D4EE9C1260CF11900C0845B /* PlainNoteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainNoteProvider.swift; sourceTree = "<group>"; };
 		0D7CB9B3260C926D00773160 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		0D8CB53225EA783200E516FC /* UICollectionView-01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UICollectionView-01.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8CB53525EA783200E516FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				0D7CB9B3260C926D00773160 /* CoreDataStack.swift */,
 				0D4EE9BA260CCDAE00C0845B /* PlainNoteRepository.swift */,
 				0D4EE9BD260CE7BC00C0845B /* RepositoryUtils.swift */,
+				0D4EE9C1260CF11900C0845B /* PlainNoteProvider.swift */,
 			);
 			path = repository;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				0D02E6C625EBCB970061A09A /* NoteSection.swift in Sources */,
 				0D02E6CF25EC0D280061A09A /* Layout.swift in Sources */,
 				0D8CB53625EA783200E516FC /* AppDelegate.swift in Sources */,
+				0D4EE9C2260CF11900C0845B /* PlainNoteProvider.swift in Sources */,
 				0D4EE9BE260CE7BC00C0845B /* RepositoryUtils.swift in Sources */,
 				0D02E6B925EB76630061A09A /* NoteCell.swift in Sources */,
 				0D8CB53825EA783200E516FC /* SceneDelegate.swift in Sources */,

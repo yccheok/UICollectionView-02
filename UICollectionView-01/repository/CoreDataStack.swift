@@ -22,7 +22,7 @@ class CoreDataStack {
         })
         
         // TODO:
-        //container.viewContext.automaticallyMergesChangesFromParent = false
+        container.viewContext.automaticallyMergesChangesFromParent = true
         //container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         //container.viewContext.undoManager = nil
         //container.viewContext.shouldDeleteInaccessibleFaults = true
@@ -39,4 +39,11 @@ class CoreDataStack {
         
         return backgroundContext
     }()
+    
+    func mergeChanges(_ changes: [AnyHashable : Any]) {
+        NSManagedObjectContext.mergeChanges(
+            fromRemoteContextSave: changes,
+            into: [persistentContainer.viewContext, backgroundContext]
+        )
+    }
 }

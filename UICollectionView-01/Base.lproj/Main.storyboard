@@ -33,6 +33,18 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="lvM-p0-cZ4">
+                        <leftBarButtonItems>
+                            <barButtonItem title="Save" id="Apk-wV-ghB">
+                                <connections>
+                                    <action selector="save:" destination="BYZ-38-t0r" id="UPq-Xh-YS9"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Del" id="TvJ-ap-ECl">
+                                <connections>
+                                    <action selector="del:" destination="BYZ-38-t0r" id="ZMM-2a-iXD"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <rightBarButtonItems>
                             <barButtonItem title="Layout" id="aRf-CG-Yym">
                                 <connections>

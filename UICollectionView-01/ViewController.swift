@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
     
@@ -27,10 +28,21 @@ class ViewController: UIViewController {
     
     var dataSource: DataSource?
     
+    var plainNoteProvider: PlainNoteProvider!
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         collectionView.reloadData()
+    }
+    
+    @IBAction func save(_ sender: Any) {
+        savePlainNotesToCoreData()
+    }
+    
+    
+    @IBAction func del(_ sender: Any) {
+        deletePlainNotesFromCoreData()
     }
     
     @IBAction func layoutButtonPressed(_ sender: Any) {
@@ -78,6 +90,8 @@ class ViewController: UIViewController {
         setupLayout()
         setupDataSource()
         applySnapshot(false)
+        
+        setupPlainNoteProvider()
     }
 
     private func setupCollectionView() {
@@ -262,6 +276,35 @@ class ViewController: UIViewController {
         self.dataSource = dataSource
     }
     
+    private func setupPlainNoteProvider() {
+        self.plainNoteProvider = PlainNoteProvider(self)
+        _ = self.plainNoteProvider.fetchedResultsController
+        
+        if let sections = self.plainNoteProvider.fetchedResultsController.sections {
+            for section in sections {
+                print("setupPlainNoteProvider section --> \(section.name)")
+                print("setupPlainNoteProvider section --> \(section.indexTitle)")
+            }
+        }
+
+        print("setupPlainNoteProvider SECTION --> \(self.plainNoteProvider.fetchedResultsController.sections?.count)")
+        print("setupPlainNoteProvider OBJECTS --> \(self.plainNoteProvider.fetchedResultsController.fetchedObjects?.count)")
+    }
+    
+    private func savePlainNotesToCoreData() {
+        for pinnedNote in pinnedNotes {
+            PlainNoteRepository.INSTANCE.insertAsync(pinnedNote)
+        }
+        
+        for normalNote in normalNotes {
+            PlainNoteRepository.INSTANCE.insertAsync(normalNote)
+        }
+    }
+    
+    private func deletePlainNotesFromCoreData() {
+        PlainNoteRepository.INSTANCE.deleteAllAsync()
+    }
+    
     private func applySnapshot(_ animatingDifferences: Bool) {
         var snapshot = Snapshot()
         
@@ -282,5 +325,13 @@ class ViewController: UIViewController {
             // As a workaround to update Pin icon.
             self.collectionView.reloadData()
         }
+    }
+}
+
+extension ViewController: NSFetchedResultsControllerDelegate {
+    /// Whenever the `NSFetchedResultsController` data changes, reload the table view data with animations
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("controllerDidChangeContent SECTION --> \(self.plainNoteProvider.fetchedResultsController.sections?.count)")
+        print("controllerDidChangeContent OBJECTS --> \(self.plainNoteProvider.fetchedResultsController.fetchedObjects?.count)")
     }
 }
