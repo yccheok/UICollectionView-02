@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class PlainNoteProvider {
+class NSPlainNoteProvider {
     
     weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
@@ -17,7 +17,7 @@ class PlainNoteProvider {
         // Create a fetch request for the Quake entity sorted by time.
         let fetchRequest = NSFetchRequest<NSPlainNote>(entityName: "NSPlainNote")
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "pinned", ascending: true)
+            NSSortDescriptor(key: "pinned", ascending: false)
         ]
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -42,5 +42,45 @@ class PlainNoteProvider {
         self.fetchedResultsControllerDelegate = fetchedResultsControllerDelegate
     }
     
-    func getPinnedNotes() ->
+    func getPinnedNSPlainNotes() -> [NSPlainNote] {
+        guard let sections = self.fetchedResultsController.sections else { return [] }
+        for section in sections {
+            if section.name == "1" {
+                if let nsPlainNotes = section.objects as? [NSPlainNote] {
+                    return nsPlainNotes
+                } else {
+                    return []
+                }
+            }
+        }
+        return []
+    }
+    
+    func getNormalNSPlainNotes() -> [NSPlainNote] {
+        guard let sections = self.fetchedResultsController.sections else { return [] }
+        for section in sections {
+            if section.name == "0" {
+                if let nsPlainNotes = section.objects as? [NSPlainNote] {
+                    return nsPlainNotes
+                } else {
+                    return []
+                }
+            }
+        }
+        return []
+    }
+    
+    func getNSPlainNote(_ indexPath: IndexPath) -> NSPlainNote? {
+        guard let sections = self.fetchedResultsController.sections else { return nil }
+        return sections[indexPath.section].objects?[indexPath.item] as? NSPlainNote
+    }
+    
+    func getNoteSection(_ sectionIndex: Int) -> NoteSection {
+        guard let sections = self.fetchedResultsController.sections else { return NoteSection.normal }
+        if (sections[sectionIndex].name == "0") {
+            return NoteSection.normal
+        } else {
+            return NoteSection.pin
+        }
+    }
 }

@@ -8,10 +8,22 @@
 import Foundation
 import CoreData
 
-class PlainNoteRepository {
-    public static let INSTANCE = PlainNoteRepository()
+class NSPlainNoteRepository {
+    public static let INSTANCE = NSPlainNoteRepository()
     
     private init() {
+    }
+    
+    func updatePinned(_ objectID: NSManagedObjectID, _ pinned: Bool) {
+        let coreDataStack = CoreDataStack.INSTANCE
+        let backgroundContext = coreDataStack.backgroundContext
+
+        // TODO: Can we optimize the code, to avoid fetching the entire model object?
+        backgroundContext.perform {
+            let nsPlainNote = try! backgroundContext.existingObject(with: objectID) as! NSPlainNote
+            nsPlainNote.pinned = pinned
+            RepositoryUtils.saveContextIfPossible(backgroundContext)
+        }
     }
     
     func insertAsync(_ plainNote: PlainNote) {
