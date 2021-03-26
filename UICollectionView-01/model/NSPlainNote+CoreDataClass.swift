@@ -19,4 +19,8 @@ public class NSPlainNote: NSManagedObject {
         self.pinned = plainNote.pinned
         self.uuid = plainNote.uuid
     }
+    
+    func toPlainNote() -> PlainNote {
+        return PlainNote(title: title!, body: body!, pinned: pinned, uuid: uuid)
+    }
 }
