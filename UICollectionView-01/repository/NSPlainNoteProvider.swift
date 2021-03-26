@@ -41,4 +41,6 @@ class PlainNoteProvider {
     init(_ fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate) {
         self.fetchedResultsControllerDelegate = fetchedResultsControllerDelegate
     }
+    
+    func getPinnedNotes() ->
 }
