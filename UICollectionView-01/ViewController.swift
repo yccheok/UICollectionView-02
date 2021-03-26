@@ -77,7 +77,6 @@ class ViewController: UIViewController {
         setupCollectionView()
         setupLayout()
         setupDataSource()
-        applySnapshot(false)
         
         setupNSPlainNoteProvider()
     }
