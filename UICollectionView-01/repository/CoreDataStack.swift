@@ -41,6 +41,10 @@ class CoreDataStack {
     }()
     
     func mergeChanges(_ changes: [AnyHashable : Any]) {
+        
+        // (1) Should we execute mergeChanges in context's respective thread?
+        // (2) Is it necessary to mergeChanges into background context?
+        
         NSManagedObjectContext.mergeChanges(
             fromRemoteContextSave: changes,
             into: [persistentContainer.viewContext, backgroundContext]
