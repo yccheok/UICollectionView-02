@@ -10,9 +10,6 @@ import CoreData
 
 class ViewController: UIViewController {
     
-    typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
-    
     private static let padding = CGFloat(8.0)
     private static let minListHeight = CGFloat(44.0)
     
@@ -22,8 +19,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     var layout = Layout.grid
-    
-    var dataSource: DataSource?
     
     var nsPlainNoteProvider: NSPlainNoteProvider!
     
@@ -73,7 +68,6 @@ class ViewController: UIViewController {
         
         setupCollectionView()
         setupLayout()
-        setupDataSource()
         
         setupNSPlainNoteProvider()
     }
@@ -84,6 +78,8 @@ class ViewController: UIViewController {
         
         let noteHeaderNib = NoteHeader.getUINib()
         collectionView.register(noteHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ViewController.NOTE_HEADER)
+        
+        collectionView.dataSource = self
     }
     
     private func setupLayout() {
@@ -207,63 +203,6 @@ class ViewController: UIViewController {
         setupListLayout()
     }
     
-    private func setupDataSource() {
-        let dataSource = DataSource(
-            collectionView: collectionView,
-            cellProvider: { [weak self] (collectionView, indexPath, objectID) -> UICollectionViewCell? in
-                
-                guard let self = self else { return nil }
-                
-                guard let noteCell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: ViewController.NOTE_CELL,
-                    for: indexPath) as? NoteCell else {
-                    return nil
-                }
-                
-                //guard let nsPlainNote = try? CoreDataStack.INSTANCE.persistentContainer.viewContext.existingObject(with: objectID) as? NSPlainNote else { return nil }
-                guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else { return nil }
-
-                // TODO: Conversion required?
-                noteCell.setup(nsPlainNote.toPlainNote())
-                
-                noteCell.updateLayout(self.layout)
-                
-                return noteCell
-            }
-        )
-        
-        dataSource.supplementaryViewProvider = { [weak self] (collectionView, kind, indexPath) ->
-            UICollectionReusableView? in
-            
-            guard let self = self else { return nil }
-            
-            guard kind == UICollectionView.elementKindSectionHeader else {
-                return nil
-            }
-            
-            guard let noteHeader = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: ViewController.NOTE_HEADER,
-                for: indexPath) as? NoteHeader else {
-                return nil
-            }
-            
-            let noteSection = self.nsPlainNoteProvider.getNoteSection(indexPath.section)
-
-            noteHeader.setup(noteSection)
-
-            if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
-                noteHeader.hide()
-            } else {
-                noteHeader.show()
-            }
-            
-            return noteHeader
-        }
-        
-        self.dataSource = dataSource
-    }
-    
     private func setupNSPlainNoteProvider() {
         self.nsPlainNoteProvider = NSPlainNoteProvider(self)
         _ = self.nsPlainNoteProvider.fetchedResultsController
@@ -288,20 +227,58 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: NSFetchedResultsControllerDelegate {
-    func controller(_ fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshotReference: NSDiffableDataSourceSnapshotReference) {
-        DispatchQueue.main.async {
-            // TODO: weak self?
-            
-            guard let dataSource = self.dataSource else {
-                return
-            }
-            
-            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        collectionView.reloadData()
+    }
+}
 
-            dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
-                guard let self = self else { return }
-                self.collectionView.reloadData()
+extension ViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return nsPlainNoteProvider.numberOfSections()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if (kind == UICollectionView.elementKindSectionHeader) {
+            guard let noteHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ViewController.NOTE_HEADER, for: indexPath) as? NoteHeader else {
+                fatalError()
             }
+            
+            let section = indexPath.section
+            
+            if let noteSection = self.nsPlainNoteProvider.getNoteSection(section) {
+                noteHeader.setup(noteSection)
+            }
+
+            if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
+                noteHeader.hide()
+            } else {
+                noteHeader.show()
+            }
+
+            return noteHeader
+        } else {
+            fatalError()
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return nsPlainNoteProvider.numberOfItemsInSection(section)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let noteCell = collectionView.dequeueReusableCell(withReuseIdentifier: ViewController.NOTE_CELL, for: indexPath) as? NoteCell else {
+            fatalError()
+        }
+        
+        guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else {
+            fatalError()
+        }
+
+        // TODO: Conversion required?
+        noteCell.setup(nsPlainNote.toPlainNote())
+        
+        noteCell.updateLayout(self.layout)
+        
+        return noteCell
     }
 }

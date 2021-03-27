@@ -76,12 +76,22 @@ class NSPlainNoteProvider {
         return sections[indexPath.section].objects?[indexPath.item] as? NSPlainNote
     }
     
-    func getNoteSection(_ sectionIndex: Int) -> NoteSection {
-        guard let sections = self.fetchedResultsController.sections else { return NoteSection.normal }
+    func getNoteSection(_ sectionIndex: Int) -> NoteSection? {
+        guard let sections = self.fetchedResultsController.sections else { return nil }
         if (sections[sectionIndex].name == "0") {
             return NoteSection.normal
         } else {
             return NoteSection.pin
         }
+    }
+    
+    func numberOfSections() -> Int {
+        guard let sections = self.fetchedResultsController.sections else { return 0 }
+        return sections.count
+    }
+    
+    func numberOfItemsInSection(_ section: Int) -> Int {
+        guard let sections = self.fetchedResultsController.sections else { return 0 }
+        return sections[section].numberOfObjects
     }
 }
