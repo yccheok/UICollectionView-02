@@ -19,6 +19,7 @@ class NSPlainNoteProvider {
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "pinned", ascending: false)
         ]
+        
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                     managedObjectContext: CoreDataStack.INSTANCE.persistentContainer.viewContext,

@@ -19,9 +19,6 @@ class ViewController: UIViewController {
     private static let NOTE_CELL = "NOTE_CELL"
     private static let NOTE_HEADER = "NOTE_HEADER"
     
-    //private var pinnedNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "pinned_plain_note")
-    //private var normalNotes: [PlainNote] = Utils.loadAndDecodeJSON(filename: "normal_plain_note")
-    
     @IBOutlet weak var collectionView: UICollectionView!
     
     var layout = Layout.grid
