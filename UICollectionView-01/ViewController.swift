@@ -30,13 +30,9 @@ class ViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    @IBAction func save(_ sender: Any) {
-        savePlainNotesToCoreData()
-    }
-    
-    
-    @IBAction func del(_ sender: Any) {
+    @IBAction func reset(_ sender: Any) {
         deletePlainNotesFromCoreData()
+        savePlainNotesToCoreData()
     }
     
     @IBAction func layoutButtonPressed(_ sender: Any) {
@@ -51,6 +47,10 @@ class ViewController: UIViewController {
     
     @IBAction func pinButtonPressed(_ sender: Any) {
         let normalNSPlainNotes = nsPlainNoteProvider.getNormalNSPlainNotes()
+        if normalNSPlainNotes.isEmpty {
+            return
+        }
+        
         let sourceIndex = Int.random(in: 0..<normalNSPlainNotes.count)
         let normalNSPlainNote = normalNSPlainNotes[sourceIndex]
         let objectID = normalNSPlainNote.objectID
@@ -59,6 +59,10 @@ class ViewController: UIViewController {
     
     @IBAction func unpinButtonPressed(_ sender: Any) {
         let pinnedNSPlainNotes = nsPlainNoteProvider.getPinnedNSPlainNotes()
+        if pinnedNSPlainNotes.isEmpty {
+            return
+        }
+        
         let sourceIndex = Int.random(in: 0..<pinnedNSPlainNotes.count)
         let pinnedNSPlainNote = pinnedNSPlainNotes[sourceIndex]
         let objectID = pinnedNSPlainNote.objectID
@@ -313,8 +317,6 @@ extension ViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("controllerDidChangeContent")
-        
         collectionView!.performBatchUpdates({ () -> Void in
             for operation: BlockOperation in self.blockOperations {
                 operation.start()
@@ -371,6 +373,21 @@ extension ViewController: UICollectionViewDataSource {
         noteCell.setup(nsPlainNote.toPlainNote())
         
         noteCell.updateLayout(self.layout)
+        
+        //
+        // DEBUG
+        //
+        let noteSection = self.nsPlainNoteProvider.getNoteSection(indexPath.section)
+        if noteSection == .normal && nsPlainNote.pinned {
+            print("Oh no! This \(indexPath.item)th note should be in Pinned section")
+            print("title-> \(nsPlainNote.title)")
+        } else if noteSection == .pin && !nsPlainNote.pinned {
+            print("Oh no! This \(indexPath.item)th note should be in Normal section")
+            print("title-> \(nsPlainNote.title)")
+        }
+        //
+        // DEBUG
+        //
         
         return noteCell
     }

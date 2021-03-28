@@ -21,7 +21,16 @@ class NSPlainNoteRepository {
         // TODO: Can we optimize the code, to avoid fetching the entire model object?
         backgroundContext.perform {
             let nsPlainNote = try! backgroundContext.existingObject(with: objectID) as! NSPlainNote
+            // This will trigger "move". The cell shall move to different section.
             nsPlainNote.pinned = pinned
+            
+            // Can we trigger "update" as well?
+            if nsPlainNote.pinned {
+                nsPlainNote.body = nsPlainNote.title! + "(Pinned)"
+            } else {
+                nsPlainNote.body = nsPlainNote.title
+            }
+            
             RepositoryUtils.saveContextIfPossible(backgroundContext)
         }
     }
