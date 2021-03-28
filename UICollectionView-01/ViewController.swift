@@ -8,10 +8,17 @@
 import UIKit
 import CoreData
 
+final class DebugDiffableDataSourceReference<SectionIdentifier, ItemIdentifier>: UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier> where SectionIdentifier: Hashable, ItemIdentifier: Hashable {
+
+    @objc func _collectionView(_ collectionView: UICollectionView, willPerformUpdates updates: [UICollectionViewUpdateItem]) {
+        print("DDS updates: \(updates)")
+    }
+}
+
 class ViewController: UIViewController {
     
-    typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    typealias DataSource = DebugDiffableDataSourceReference<Int, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
     
     private static let padding = CGFloat(8.0)
     private static let minListHeight = CGFloat(44.0)
@@ -54,6 +61,10 @@ class ViewController: UIViewController {
     
     @IBAction func pinButtonPressed(_ sender: Any) {
         let normalNSPlainNotes = nsPlainNoteProvider.getNormalNSPlainNotes()
+        if normalNSPlainNotes.isEmpty {
+            return
+        }
+        
         let sourceIndex = Int.random(in: 0..<normalNSPlainNotes.count)
         let normalNSPlainNote = normalNSPlainNotes[sourceIndex]
         let objectID = normalNSPlainNote.objectID
@@ -62,6 +73,10 @@ class ViewController: UIViewController {
     
     @IBAction func unpinButtonPressed(_ sender: Any) {
         let pinnedNSPlainNotes = nsPlainNoteProvider.getPinnedNSPlainNotes()
+        if pinnedNSPlainNotes.isEmpty {
+            return
+        }
+        
         let sourceIndex = Int.random(in: 0..<pinnedNSPlainNotes.count)
         let pinnedNSPlainNote = pinnedNSPlainNotes[sourceIndex]
         let objectID = pinnedNSPlainNote.objectID
@@ -228,6 +243,23 @@ class ViewController: UIViewController {
                 
                 noteCell.updateLayout(self.layout)
                 
+                
+                //
+                // DEBUG
+                //
+                let noteSection = self.nsPlainNoteProvider.getNoteSection(indexPath.section)
+                if noteSection == .normal && nsPlainNote.pinned {
+                    print("Oh no! This \(indexPath.item)th note should be in Pinned section")
+                    print("title-> \(nsPlainNote.title)")
+                } else if noteSection == .pin && !nsPlainNote.pinned {
+                    print("Oh no! This \(indexPath.item)th note should be in Normal section")
+                    print("title-> \(nsPlainNote.title)")
+                }
+                //
+                // DEBUG
+                //
+                
+                
                 return noteCell
             }
         )
@@ -296,11 +328,11 @@ extension ViewController: NSFetchedResultsControllerDelegate {
                 return
             }
             
-            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
 
             dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
                 guard let self = self else { return }
-                self.collectionView.reloadData()
+                //self.collectionView.reloadData()
             }
         }
     }
