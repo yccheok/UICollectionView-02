@@ -250,8 +250,10 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             print("Update Object: \(indexPath)")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.reloadItems(at: [indexPath!])
+                    if let this = self, let indexPath = indexPath {
+                        if let nsPlainNote = anObject as? NSPlainNote {
+                            this.configureCell(nsPlainNote, indexPath)
+                        }
                     }
                 })
             )
@@ -261,8 +263,12 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.moveItem(at: indexPath!, to: newIndexPath!)
+                    if let this = self, let newIndexPath = newIndexPath, let indexPath = indexPath {
+                        this.collectionView.moveItem(at: indexPath, to: newIndexPath)
+
+                        if let nsPlainNote = anObject as? NSPlainNote {
+                            _ = this.configureCell(nsPlainNote, newIndexPath)
+                        }
                     }
                 })
             )
@@ -334,21 +340,7 @@ extension ViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if (kind == UICollectionView.elementKindSectionHeader) {
-            guard let noteHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ViewController.NOTE_HEADER, for: indexPath) as? NoteHeader else {
-                fatalError()
-            }
-            
-            let section = indexPath.section
-            
-            if let noteSection = self.nsPlainNoteProvider.getNoteSection(section) {
-                noteHeader.setup(noteSection)
-            }
-
-            if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
-                noteHeader.hide()
-            } else {
-                noteHeader.show()
-            }
+            let noteHeader = configureHeader(indexPath)
 
             return noteHeader
         } else {
@@ -356,16 +348,33 @@ extension ViewController: UICollectionViewDataSource {
         }
     }
     
+    private func configureHeader(_ indexPath: IndexPath) -> NoteHeader {
+        guard let noteHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ViewController.NOTE_HEADER, for: indexPath) as? NoteHeader else {
+            fatalError()
+        }
+        
+        let section = indexPath.section
+        
+        if let noteSection = self.nsPlainNoteProvider.getNoteSection(section) {
+            noteHeader.setup(noteSection)
+        }
+
+        if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
+            print("HEADER HIDE!!!")
+            noteHeader.hide()
+        } else {
+            noteHeader.show()
+        }
+
+        return noteHeader
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return nsPlainNoteProvider.numberOfItemsInSection(section)
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureCell(_ nsPlainNote: NSPlainNote, _ indexPath: IndexPath) -> NoteCell {
         guard let noteCell = collectionView.dequeueReusableCell(withReuseIdentifier: ViewController.NOTE_CELL, for: indexPath) as? NoteCell else {
-            fatalError()
-        }
-        
-        guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else {
             fatalError()
         }
 
@@ -373,6 +382,16 @@ extension ViewController: UICollectionViewDataSource {
         noteCell.setup(nsPlainNote.toPlainNote())
         
         noteCell.updateLayout(self.layout)
+        
+        return noteCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else {
+            fatalError()
+        }
+
+        let noteCell = configureCell(nsPlainNote, indexPath)
         
         //
         // DEBUG
