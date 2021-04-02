@@ -240,8 +240,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.insertItems(at: [newIndexPath!])
+                    if let self = self {
+                        self.collectionView!.insertItems(at: [newIndexPath!])
                     }
                 })
             )
@@ -250,8 +250,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             print("Update Object: \(indexPath)")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self, let indexPath = indexPath {
-                        this.collectionView.reloadItems(at: [indexPath])
+                    if let self = self, let indexPath = indexPath {
+                        self.collectionView.reloadItems(at: [indexPath])
                     }
                 })
             )
@@ -261,8 +261,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self, let newIndexPath = newIndexPath, let indexPath = indexPath {
-                        this.collectionView.moveItem(at: indexPath, to: newIndexPath)
+                    if let self = self, let newIndexPath = newIndexPath, let indexPath = indexPath {
+                        self.collectionView.moveItem(at: indexPath, to: newIndexPath)
                     }
                 })
             )
@@ -272,8 +272,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.deleteItems(at: [indexPath!])
+                    if let self = self {
+                        self.collectionView!.deleteItems(at: [indexPath!])
                     }
                 })
             )
@@ -286,8 +286,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.insertSections(IndexSet(integer: sectionIndex))
+                    if let self = self {
+                        self.collectionView!.insertSections(IndexSet(integer: sectionIndex))
                     }
                 })
             )
@@ -297,8 +297,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.reloadSections(IndexSet(integer: sectionIndex))
+                    if let self = self {
+                        self.collectionView!.reloadSections(IndexSet(integer: sectionIndex))
                     }
                 })
             )
@@ -308,8 +308,8 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.deleteSections(IndexSet(integer: sectionIndex))
+                    if let self = self {
+                        self.collectionView!.deleteSections(IndexSet(integer: sectionIndex))
                     }
                 })
             )
