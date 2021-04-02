@@ -16,8 +16,12 @@ class NSPlainNoteProvider {
         
         // Create a fetch request for the Quake entity sorted by time.
         let fetchRequest = NSFetchRequest<NSPlainNote>(entityName: "NSPlainNote")
+        // Having "pinned" as propertiesToFetch is important to ensure we are receiving "move" instead of "update"
+        // during pinned/ unpinned.
+        fetchRequest.propertiesToFetch = ["pinned"]
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "pinned", ascending: false)
+            NSSortDescriptor(key: "pinned", ascending: false),
+            NSSortDescriptor(key: "title", ascending: false)
         ]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
