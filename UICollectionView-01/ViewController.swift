@@ -251,9 +251,7 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
                     if let this = self, let indexPath = indexPath {
-                        if let nsPlainNote = anObject as? NSPlainNote {
-                            this.configureCell(nsPlainNote, indexPath)
-                        }
+                        this.collectionView.reloadItems(at: [indexPath])
                     }
                 })
             )
@@ -265,10 +263,6 @@ extension ViewController: NSFetchedResultsControllerDelegate {
                 BlockOperation(block: { [weak self] in
                     if let this = self, let newIndexPath = newIndexPath, let indexPath = indexPath {
                         this.collectionView.moveItem(at: indexPath, to: newIndexPath)
-
-                        if let nsPlainNote = anObject as? NSPlainNote {
-                            _ = this.configureCell(nsPlainNote, newIndexPath)
-                        }
                     }
                 })
             )
@@ -329,6 +323,10 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             }
         }, completion: { (finished) -> Void in
             self.blockOperations.removeAll(keepingCapacity: false)
+
+            self.collectionView.reloadData()
+            // https://stackoverflow.com/a/46751421/72437
+            self.collectionView.numberOfItems(inSection: 0)
         })
     }
 }
@@ -360,7 +358,6 @@ extension ViewController: UICollectionViewDataSource {
         }
 
         if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
-            print("HEADER HIDE!!!")
             noteHeader.hide()
         } else {
             noteHeader.show()
