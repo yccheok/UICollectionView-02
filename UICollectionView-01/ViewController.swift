@@ -39,14 +39,10 @@ class ViewController: UIViewController {
         
         collectionView.reloadData()
     }
-    
-    @IBAction func save(_ sender: Any) {
-        savePlainNotesToCoreData()
-    }
-    
-    
-    @IBAction func del(_ sender: Any) {
+
+    @IBAction func reset(_ sender: Any) {
         deletePlainNotesFromCoreData()
+        savePlainNotesToCoreData()
     }
     
     @IBAction func layoutButtonPressed(_ sender: Any) {
@@ -65,7 +61,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let sourceIndex = Int.random(in: 0..<normalNSPlainNotes.count)
+        let sourceIndex = normalNSPlainNotes.count-1
         let normalNSPlainNote = normalNSPlainNotes[sourceIndex]
         let objectID = normalNSPlainNote.objectID
         NSPlainNoteRepository.INSTANCE.updatePinned(objectID, true)
@@ -77,7 +73,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let sourceIndex = Int.random(in: 0..<pinnedNSPlainNotes.count)
+        let sourceIndex = pinnedNSPlainNotes.count-1
         let pinnedNSPlainNote = pinnedNSPlainNotes[sourceIndex]
         let objectID = pinnedNSPlainNote.objectID
         NSPlainNoteRepository.INSTANCE.updatePinned(objectID, false)
@@ -332,7 +328,7 @@ extension ViewController: NSFetchedResultsControllerDelegate {
 
             dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
                 guard let self = self else { return }
-                //self.collectionView.reloadData()
+                self.collectionView.reloadData()
             }
         }
     }
