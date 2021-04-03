@@ -61,7 +61,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let sourceIndex = normalNSPlainNotes.count-1
+        let sourceIndex = Int.random(in: 0..<normalNSPlainNotes.count)
         let normalNSPlainNote = normalNSPlainNotes[sourceIndex]
         let objectID = normalNSPlainNote.objectID
         NSPlainNoteRepository.INSTANCE.updatePinned(objectID, true)
@@ -73,7 +73,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let sourceIndex = pinnedNSPlainNotes.count-1
+        let sourceIndex = Int.random(in: 0..<pinnedNSPlainNotes.count)
         let pinnedNSPlainNote = pinnedNSPlainNotes[sourceIndex]
         let objectID = pinnedNSPlainNote.objectID
         NSPlainNoteRepository.INSTANCE.updatePinned(objectID, false)
