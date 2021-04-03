@@ -4,7 +4,6 @@
 //
 //  Created by Cheok Yan Cheng on 26/03/2021.
 //
-
 import Foundation
 import CoreData
 
@@ -16,8 +15,12 @@ class NSPlainNoteProvider {
         
         // Create a fetch request for the Quake entity sorted by time.
         let fetchRequest = NSFetchRequest<NSPlainNote>(entityName: "NSPlainNote")
+        // Having "pinned" as propertiesToFetch is important to ensure we are receiving "move" instead of "update"
+        // during pinned/ unpinned.
+        fetchRequest.propertiesToFetch = ["pinned"]
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "pinned", ascending: false)
+            NSSortDescriptor(key: "pinned", ascending: false),
+            NSSortDescriptor(key: "title", ascending: false)
         ]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -76,12 +79,22 @@ class NSPlainNoteProvider {
         return sections[indexPath.section].objects?[indexPath.item] as? NSPlainNote
     }
     
-    func getNoteSection(_ sectionIndex: Int) -> NoteSection {
-        guard let sections = self.fetchedResultsController.sections else { return NoteSection.normal }
+    func getNoteSection(_ sectionIndex: Int) -> NoteSection? {
+        guard let sections = self.fetchedResultsController.sections else { return nil }
         if (sections[sectionIndex].name == "0") {
             return NoteSection.normal
         } else {
             return NoteSection.pin
         }
+    }
+    
+    func numberOfSections() -> Int {
+        guard let sections = self.fetchedResultsController.sections else { return 0 }
+        return sections.count
+    }
+    
+    func numberOfItemsInSection(_ section: Int) -> Int {
+        guard let sections = self.fetchedResultsController.sections else { return 0 }
+        return sections[section].numberOfObjects
     }
 }

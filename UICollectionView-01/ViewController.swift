@@ -278,7 +278,9 @@ class ViewController: UIViewController {
             
             let noteSection = self.nsPlainNoteProvider.getNoteSection(indexPath.section)
 
-            noteHeader.setup(noteSection)
+            if let noteSection = noteSection {
+                noteHeader.setup(noteSection)
+            }
 
             if (self.nsPlainNoteProvider.getPinnedNSPlainNotes().isEmpty) {
                 noteHeader.hide()
