@@ -24,13 +24,6 @@ class NSPlainNoteRepository {
             // This will trigger "move". The cell shall move to different section.
             nsPlainNote.pinned = pinned
             
-            // Can we trigger "update" as well?
-            if nsPlainNote.pinned {
-                nsPlainNote.body = nsPlainNote.title! + "(Pinned)"
-            } else {
-                nsPlainNote.body = nsPlainNote.title
-            }
-            
             RepositoryUtils.saveContextIfPossible(backgroundContext)
         }
     }

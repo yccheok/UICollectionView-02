@@ -317,11 +317,16 @@ extension ViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        collectionView!.performBatchUpdates({ () -> Void in
+        collectionView!.performBatchUpdates({ [weak self] () -> Void  in
+            guard let self = self else { return }
+            
             for operation: BlockOperation in self.blockOperations {
                 operation.start()
             }
-        }, completion: { (finished) -> Void in
+        }, completion: { [weak self] (finished) -> Void in
+            
+            guard let self = self else { return }
+            
             self.blockOperations.removeAll(keepingCapacity: false)
 
             self.collectionView.reloadData()
