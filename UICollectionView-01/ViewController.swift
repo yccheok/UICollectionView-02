@@ -319,8 +319,8 @@ class ViewController: UIViewController {
 
 extension ViewController: NSFetchedResultsControllerDelegate {
     func controller(_ fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshotReference: NSDiffableDataSourceSnapshotReference) {
-        DispatchQueue.main.async {
-            // TODO: weak self?
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             
             guard let dataSource = self.dataSource else {
                 return
@@ -330,6 +330,7 @@ extension ViewController: NSFetchedResultsControllerDelegate {
 
             dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
                 guard let self = self else { return }
+                
                 self.collectionView.reloadData()
             }
         }
