@@ -43,9 +43,9 @@ class NoteCell: UICollectionViewCell {
         
         // https://www.hackingwithswift.com/example-code/uikit/how-to-add-a-shadow-to-a-uiview
         self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.3
+        self.layer.shadowOpacity = Constants.SHADOW_OPACITY
+        self.layer.shadowRadius = Constants.SHADOW_RADIUS
         self.layer.shadowOffset = CGSize(width: 0.5, height: 0.5)
-        self.layer.shadowRadius = 2
         self.layer.masksToBounds = false
         //self.layer.shouldRasterize = true
         //self.layer.rasterizationScale = UIScreen.main.scale
@@ -54,15 +54,17 @@ class NoteCell: UICollectionViewCell {
     }
 
     func liftUp() {
-        self.layer.shadowOpacity = 0.8  // Stronger value for demo purpose.
-        self.layer.shadowRadius = 4.0
-        self.alpha = 0.7
+        self.layer.shadowOpacity = Constants.DRAG_N_MOVE_SHADOW_OPACITY
+        self.layer.shadowRadius = Constants.DRAG_N_MOVE_SHADOW_RADIUS
+        self.alpha = Constants.DRAG_N_MOVE_ALPHA
+        self.transform = CGAffineTransform(scaleX: Constants.DRAG_N_MOVE_SCALE, y: Constants.DRAG_N_MOVE_SCALE)
     }
     
     func liftDown() {
-        self.layer.shadowOpacity = 0.3
-        self.layer.shadowRadius = 2
-        self.alpha = 1.0
+        self.layer.shadowOpacity = Constants.SHADOW_OPACITY
+        self.layer.shadowRadius = Constants.SHADOW_RADIUS
+        self.alpha = 1
+        self.transform = .identity
     }
     
     private func installLongPressGesture() {
