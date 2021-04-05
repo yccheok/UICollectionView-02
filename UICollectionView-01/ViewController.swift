@@ -443,12 +443,15 @@ extension ViewController : ReorderDelegate {
 }
 
 extension ViewController : UICollectionViewDelegate {
-    /*
-    func collectionView(_ collectionView: UICollectionView,
-    targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath,
-    toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
-        print("!!!!!")
-        
-        return originalIndexPath
-    }*/
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+
+        let originalSection = originalIndexPath.section
+        let proposedSection = proposedIndexPath.section
+
+        if originalSection != proposedSection {
+            return originalIndexPath
+        }
+
+        return proposedIndexPath
+    }
 }
