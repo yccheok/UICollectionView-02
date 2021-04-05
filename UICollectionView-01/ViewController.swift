@@ -268,7 +268,6 @@ class ViewController: UIViewController {
                 // DEBUG
                 //
                 
-                
                 return noteCell
             }
         )
@@ -331,7 +330,6 @@ class ViewController: UIViewController {
                     }
                 }
                 
-                self.nsPlainNoteProvider.fetchedResultsController.delegate = nil
                 NSPlainNoteRepository.INSTANCE.updateOrders(updates)
             }
         }
