@@ -6,3 +6,11 @@
 //
 
 import Foundation
+import UIKit
+
+protocol ReorderDelegate : AnyObject {
+    func began(_ gesture: UILongPressGestureRecognizer)
+    func changed(_ gesture: UILongPressGestureRecognizer)
+    func end(_ gesture: UILongPressGestureRecognizer)
+    func cancel(_ gesture: UILongPressGestureRecognizer)
+}
