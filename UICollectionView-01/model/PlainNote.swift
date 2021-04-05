@@ -11,12 +11,14 @@ struct PlainNote: Codable {
     var title: String
     var body: String
     var pinned: Bool
+    var order: Int64
     let uuid: UUID
     
     enum CodingKeys: String, CodingKey {
         case title
         case body
         case pinned
+        case order
         case uuid
     }
 }
@@ -59,8 +61,8 @@ extension PlainNote: Hashable {
 }
 
 extension PlainNote {
-    init(title: String, body: String, pinned: Bool) {
-        self.init(title: title, body: body, pinned: pinned, uuid: UUID())
+    init(title: String, body: String, pinned: Bool, order: Int64) {
+        self.init(title: title, body: body, pinned: pinned, order: order, uuid: UUID())
     }
     
     init(from decoder: Decoder) throws {
@@ -68,6 +70,7 @@ extension PlainNote {
         title = try values.decode(String.self, forKey: .title)
         body = try values.decode(String.self, forKey: .body)
         pinned = try values.decode(Bool.self, forKey: .pinned)
+        order = try values.decode(Int64.self, forKey: .order)
         do {
             uuid = try values.decode(UUID.self, forKey: .uuid)
         } catch {
