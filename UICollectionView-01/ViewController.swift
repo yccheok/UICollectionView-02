@@ -17,8 +17,8 @@ final class DebugDiffableDataSourceReference<SectionIdentifier, ItemIdentifier>:
 
 class ViewController: UIViewController {
     
-    typealias DataSource = DebugDiffableDataSourceReference<Int, NSManagedObjectID>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
+    typealias DataSource = DebugDiffableDataSourceReference<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     
     private static let padding = CGFloat(8.0)
     private static let minListHeight = CGFloat(44.0)
@@ -31,6 +31,11 @@ class ViewController: UIViewController {
     var layout = Layout.grid
     
     var dataSource: DataSource?
+    
+    var movingIndexPath: IndexPath?
+    
+    var touchedDx: CGFloat = 0.0
+    var touchedDy: CGFloat = 0.0
     
     var nsPlainNoteProvider: NSPlainNoteProvider!
     
@@ -95,6 +100,8 @@ class ViewController: UIViewController {
         
         let noteHeaderNib = NoteHeader.getUINib()
         collectionView.register(noteHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ViewController.NOTE_HEADER)
+        
+        collectionView.delegate = self
     }
     
     private func setupLayout() {
@@ -230,15 +237,21 @@ class ViewController: UIViewController {
                     for: indexPath) as? NoteCell else {
                     return nil
                 }
-                
                 //guard let nsPlainNote = try? CoreDataStack.INSTANCE.persistentContainer.viewContext.existingObject(with: objectID) as? NSPlainNote else { return nil }
                 guard let nsPlainNote = self.nsPlainNoteProvider.getNSPlainNote(indexPath) else { return nil }
 
+                noteCell.reorderDelegate = self
+                
                 // TODO: Conversion required?
                 noteCell.setup(nsPlainNote.toPlainNote())
                 
                 noteCell.updateLayout(self.layout)
                 
+                if let movingIndexPath = self.movingIndexPath, movingIndexPath == indexPath {
+                    noteCell.liftUp()
+                } else {
+                    noteCell.liftDown()
+                }
                 
                 //
                 // DEBUG
@@ -291,6 +304,38 @@ class ViewController: UIViewController {
             return noteHeader
         }
         
+        dataSource.reorderingHandlers.canReorderItem = { identifierType in
+            return true
+        }
+        
+        dataSource.reorderingHandlers.didReorder = { [weak self] transaction in
+            guard let self = self else { return }
+
+            var updates:[(objectID: NSManagedObjectID, order: Int64)] = []
+            
+            for sectionTransaction in transaction.sectionTransactions {
+                let sectionIdentifier = sectionTransaction.sectionIdentifier
+                
+                var orders: [Int64] = []
+                for nsPlainNote in self.nsPlainNoteProvider.getNSPlainNotes(sectionIdentifier) {
+                    orders.append(nsPlainNote.order)
+                }
+                
+                for (index, objectID) in sectionTransaction.finalSnapshot.items.enumerated() {
+                    guard let nsPlainNote = try? CoreDataStack.INSTANCE.persistentContainer.viewContext.existingObject(with: objectID) as? NSPlainNote else { continue }
+                    
+                    let order = orders[index]
+                    
+                    if (nsPlainNote.order != order) {
+                        updates.append((objectID: nsPlainNote.objectID, order: order))
+                    }
+                }
+                
+                self.nsPlainNoteProvider.fetchedResultsController.delegate = nil
+                NSPlainNoteRepository.INSTANCE.updateOrders(updates)
+            }
+        }
+        
         self.dataSource = dataSource
     }
     
@@ -326,7 +371,7 @@ extension ViewController: NSFetchedResultsControllerDelegate {
                 return
             }
             
-            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
+            var snapshot = snapshotReference as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
 
             dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
                 guard let self = self else { return }
@@ -335,4 +380,76 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             }
         }
     }
+}
+
+extension ViewController : ReorderDelegate {
+    func began(_ gesture: UILongPressGestureRecognizer) {
+        let location = gesture.location(in: self.collectionView)
+        
+        guard let indexPath = self.collectionView.indexPathForItem(at: location) else {
+            return
+        }
+        
+        guard let noteCell = collectionView.cellForItem(at: indexPath as IndexPath) as? NoteCell else {
+            return
+        }
+        
+        let noteCellLocation = gesture.location(in: noteCell)
+        touchedDx = noteCellLocation.x - noteCell.frame.width/2
+        touchedDy = noteCellLocation.y - noteCell.frame.height/2
+        
+        self.movingIndexPath = indexPath
+        
+        collectionView.beginInteractiveMovementForItem(at: indexPath)
+
+        noteCell.liftUp()
+    }
+    
+    func changed(_ gesture: UILongPressGestureRecognizer) {
+        var location = gesture.location(in: collectionView)
+        
+        // Lock down the x position
+        // https://stackoverflow.com/questions/40116282/preventing-moving-uicollectionviewcell-by-its-center-when-dragging
+        location.x = location.x - touchedDx
+        location.y = location.y - touchedDy
+        
+        collectionView.updateInteractiveMovementTargetPosition(location)
+    }
+    
+    func end(_ gesture: UILongPressGestureRecognizer) {
+        collectionView.endInteractiveMovement()
+        
+        if let movingIndexPath = self.movingIndexPath, let noteCell = collectionView.cellForItem(at: movingIndexPath as IndexPath) as? NoteCell {
+            noteCell.liftDown()
+        }
+        
+        self.movingIndexPath = nil
+
+        touchedDx = 0
+        touchedDy = 0
+    }
+    
+    func cancel(_ gesture: UILongPressGestureRecognizer) {
+        collectionView.endInteractiveMovement()
+        
+        if let movingIndexPath = self.movingIndexPath, let noteCell = collectionView.cellForItem(at: movingIndexPath as IndexPath) as? NoteCell {
+            noteCell.liftDown()
+        }
+        
+        self.movingIndexPath = nil
+        
+        touchedDx = 0
+        touchedDy = 0
+    }
+}
+
+extension ViewController : UICollectionViewDelegate {
+    /*
+    func collectionView(_ collectionView: UICollectionView,
+    targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath,
+    toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        print("!!!!!")
+        
+        return originalIndexPath
+    }*/
 }
