@@ -155,7 +155,7 @@ class ViewController: UIViewController {
         )
         section.boundarySupplementaryItems = [sectionHeader]
         
-        let compositionalLayout = UICollectionViewCompositionalLayout(section: section)
+        let compositionalLayout = ReorderCompositionalLayout(section: section)
 
         // Switch the layout to UICollectionViewCompositionalLayout
         collectionView.collectionViewLayout = compositionalLayout
@@ -215,7 +215,7 @@ class ViewController: UIViewController {
         )
         section.boundarySupplementaryItems = [sectionHeader]
         
-        let compositionalLayout = UICollectionViewCompositionalLayout(section: section)
+        let compositionalLayout = ReorderCompositionalLayout(section: section)
 
         // Switch the layout to UICollectionViewCompositionalLayout
         collectionView.collectionViewLayout = compositionalLayout
@@ -248,6 +248,7 @@ class ViewController: UIViewController {
                 noteCell.updateLayout(self.layout)
                 
                 if let movingIndexPath = self.movingIndexPath, movingIndexPath == indexPath {
+                    // Seem like never hit here. But I think it is Ok to leave the code that way...
                     noteCell.liftUp()
                 } else {
                     noteCell.liftDown()
