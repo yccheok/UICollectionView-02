@@ -36,6 +36,8 @@ class NoteCell: UICollectionViewCell {
     @IBOutlet var reminderLabelZeroHeightConstraint: NSLayoutConstraint!
     @IBOutlet var bottomStackViewZeroHeightConstraint: NSLayoutConstraint!
     
+    weak var reorderDelegate: ReorderDelegate?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -48,8 +50,40 @@ class NoteCell: UICollectionViewCell {
         //self.layer.shouldRasterize = true
         //self.layer.rasterizationScale = UIScreen.main.scale
         
+        installLongPressGesture()
     }
 
+    func liftUp() {
+        self.layer.shadowOpacity = 0.8  // Stronger value for demo purpose.
+        self.layer.shadowRadius = 4.0
+        self.alpha = 0.7
+    }
+    
+    func liftDown() {
+        self.layer.shadowOpacity = 0.3
+        self.layer.shadowRadius = 2
+        self.alpha = 1.0
+    }
+    
+    private func installLongPressGesture() {
+        let gesture = UILongPressGestureRecognizer(target:self, action: #selector(longPressGesture))
+        //gesture.minimumPressDuration = 0
+        self.addGestureRecognizer(gesture)
+    }
+    
+    @objc func longPressGesture(gesture: UILongPressGestureRecognizer) {
+        switch(gesture.state) {
+        case UIGestureRecognizerState.began:
+            reorderDelegate?.began(gesture)
+        case UIGestureRecognizerState.changed:
+            reorderDelegate?.changed(gesture)
+        case UIGestureRecognizerState.ended:
+            reorderDelegate?.end(gesture)
+        default:
+            reorderDelegate?.cancel(gesture)
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         // Get the most recent bounds in layoutSubviews.
