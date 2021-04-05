@@ -2,11 +2,13 @@
     {
         "title": "1",
         "body": "1",
-        "pinned": true
+        "pinned": true,
+        "order": 1
     },
     {
         "title": "2",
         "body": "2",
-        "pinned": true
+        "pinned": true,
+        "order": 2
     }
 ]
