@@ -13,6 +13,26 @@ class NSPlainNoteRepository {
     
     private init() {
     }
+   
+    func updateOrders(_ updates : [(objectID: NSManagedObjectID, order: Int64)]) {
+        if updates.isEmpty {
+            return
+        }
+        
+        let coreDataStack = CoreDataStack.INSTANCE
+        let backgroundContext = coreDataStack.backgroundContext
+
+        // TODO: Can we optimize the code, to avoid fetching the entire model object?
+        backgroundContext.perform {
+            for update in updates {
+                let objectID = update.objectID
+                let order = update.order
+                let nsPlainNote = try! backgroundContext.existingObject(with: objectID) as! NSPlainNote
+                nsPlainNote.order = order
+            }
+            RepositoryUtils.saveContextIfPossible(backgroundContext)
+        }
+    }
     
     func updatePinned(_ objectID: NSManagedObjectID, _ pinned: Bool) {
         let coreDataStack = CoreDataStack.INSTANCE
