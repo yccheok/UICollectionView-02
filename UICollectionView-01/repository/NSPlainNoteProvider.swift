@@ -20,7 +20,7 @@ class NSPlainNoteProvider {
         fetchRequest.propertiesToFetch = ["pinned"]
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "pinned", ascending: false),
-            NSSortDescriptor(key: "title", ascending: false)
+            NSSortDescriptor(key: "order", ascending: true)
         ]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -46,10 +46,10 @@ class NSPlainNoteProvider {
         self.fetchedResultsControllerDelegate = fetchedResultsControllerDelegate
     }
     
-    func getPinnedNSPlainNotes() -> [NSPlainNote] {
+    func getNSPlainNotes(_ sectionIdentifier: String) -> [NSPlainNote] {
         guard let sections = self.fetchedResultsController.sections else { return [] }
         for section in sections {
-            if section.name == "1" {
+            if section.name == sectionIdentifier {
                 if let nsPlainNotes = section.objects as? [NSPlainNote] {
                     return nsPlainNotes
                 } else {
@@ -60,18 +60,12 @@ class NSPlainNoteProvider {
         return []
     }
     
+    func getPinnedNSPlainNotes() -> [NSPlainNote] {
+        return getNSPlainNotes("1")
+    }
+    
     func getNormalNSPlainNotes() -> [NSPlainNote] {
-        guard let sections = self.fetchedResultsController.sections else { return [] }
-        for section in sections {
-            if section.name == "0" {
-                if let nsPlainNotes = section.objects as? [NSPlainNote] {
-                    return nsPlainNotes
-                } else {
-                    return []
-                }
-            }
-        }
-        return []
+        return getNSPlainNotes("0")
     }
     
     func getNSPlainNote(_ indexPath: IndexPath) -> NSPlainNote? {
