@@ -19,9 +19,8 @@ extension NSPlainNote {
     @NSManaged public var body: String?
     @NSManaged public var title: String?
     @NSManaged public var pinned: Bool
-    @NSManaged public var uuid: UUID?
     @NSManaged public var order: Int64
-
+    @NSManaged public var uuid: UUID
 }
 
 extension NSPlainNote : Identifiable {
