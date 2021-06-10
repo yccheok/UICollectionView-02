@@ -14,11 +14,13 @@
 		0D02E6C625EBCB970061A09A /* NoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02E6C525EBCB970061A09A /* NoteSection.swift */; };
 		0D02E6CB25EBE1000061A09A /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02E6CA25EBE1000061A09A /* UIView+Extensions.swift */; };
 		0D02E6CF25EC0D280061A09A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02E6CE25EC0D280061A09A /* Layout.swift */; };
+		0D14F2CE2672313800B90CF1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D14F2CD2672313800B90CF1 /* Constants.swift */; };
 		0D4AFBE225EA986C00ED9E75 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4AFBE125EA986C00ED9E75 /* Log.swift */; };
 		0D4EE9BB260CCDAE00C0845B /* NSPlainNoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9BA260CCDAE00C0845B /* NSPlainNoteRepository.swift */; };
 		0D4EE9BE260CE7BC00C0845B /* RepositoryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9BD260CE7BC00C0845B /* RepositoryUtils.swift */; };
 		0D4EE9C2260CF11900C0845B /* NSPlainNoteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EE9C1260CF11900C0845B /* NSPlainNoteProvider.swift */; };
 		0D7CB9B4260C926D00773160 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CB9B3260C926D00773160 /* CoreDataStack.swift */; };
+		0D813907267141B4009DF1D9 /* ReorderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D813906267141B4009DF1D9 /* ReorderDelegate.swift */; };
 		0D8CB53625EA783200E516FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53525EA783200E516FC /* AppDelegate.swift */; };
 		0D8CB53825EA783200E516FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53725EA783200E516FC /* SceneDelegate.swift */; };
 		0D8CB53A25EA783200E516FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8CB53925EA783200E516FC /* ViewController.swift */; };
@@ -45,11 +47,13 @@
 		0D02E6C525EBCB970061A09A /* NoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteSection.swift; sourceTree = "<group>"; };
 		0D02E6CA25EBE1000061A09A /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		0D02E6CE25EC0D280061A09A /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		0D14F2CD2672313800B90CF1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0D4AFBE125EA986C00ED9E75 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		0D4EE9BA260CCDAE00C0845B /* NSPlainNoteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPlainNoteRepository.swift; sourceTree = "<group>"; };
 		0D4EE9BD260CE7BC00C0845B /* RepositoryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryUtils.swift; sourceTree = "<group>"; };
 		0D4EE9C1260CF11900C0845B /* NSPlainNoteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPlainNoteProvider.swift; sourceTree = "<group>"; };
 		0D7CB9B3260C926D00773160 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		0D813906267141B4009DF1D9 /* ReorderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderDelegate.swift; sourceTree = "<group>"; };
 		0D8CB53225EA783200E516FC /* UICollectionView-01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UICollectionView-01.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8CB53525EA783200E516FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D8CB53725EA783200E516FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -124,6 +128,14 @@
 			path = repository;
 			sourceTree = "<group>";
 		};
+		0D8139052671419B009DF1D9 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				0D813906267141B4009DF1D9 /* ReorderDelegate.swift */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
 		0D8CB52925EA783200E516FC = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +155,7 @@
 		0D8CB53425EA783200E516FC /* UICollectionView-01 */ = {
 			isa = PBXGroup;
 			children = (
+				0D8139052671419B009DF1D9 /* ui */,
 				0D7CB9B2260C91EE00773160 /* repository */,
 				0D02E6C925EBE0CF0061A09A /* extension */,
 				0D02E6B625EB762B0061A09A /* view */,
@@ -157,6 +170,7 @@
 				0D8CB54025EA783400E516FC /* LaunchScreen.storyboard */,
 				0D8CB54325EA783400E516FC /* Info.plist */,
 				0D8CB55025EA881C00E516FC /* Utils.swift */,
+				0D14F2CD2672313800B90CF1 /* Constants.swift */,
 			);
 			path = "UICollectionView-01";
 			sourceTree = "<group>";
@@ -267,7 +281,9 @@
 				0D8CB54D25EA7C5600E516FC /* PlainNote.swift in Sources */,
 				0DC54E5D260C80F800B2FD72 /* wenote.xcdatamodeld in Sources */,
 				0D7CB9B4260C926D00773160 /* CoreDataStack.swift in Sources */,
+				0D813907267141B4009DF1D9 /* ReorderDelegate.swift in Sources */,
 				0D02E6CB25EBE1000061A09A /* UIView+Extensions.swift in Sources */,
+				0D14F2CE2672313800B90CF1 /* Constants.swift in Sources */,
 				0D02E6C225EBC57B0061A09A /* NoteHeader.swift in Sources */,
 				0D4EE9BB260CCDAE00C0845B /* NSPlainNoteRepository.swift in Sources */,
 				0DC0027A25ED11DB0052B619 /* String+Extensions.swift in Sources */,
