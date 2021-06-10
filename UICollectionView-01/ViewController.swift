@@ -105,7 +105,7 @@ class ViewController: UIViewController {
         case .changed:
             self.changed(gesture)
         case .ended:
-            self.end(gesture)
+            self.ended(gesture)
         default:
             self.cancel(gesture)
         }
@@ -531,7 +531,7 @@ extension ViewController : ReorderDelegate {
         collectionView.updateInteractiveMovementTargetPosition(location)
     }
     
-    func end(_ gesture: UILongPressGestureRecognizer) {
+    func ended(_ gesture: UILongPressGestureRecognizer) {
         UIView.animate(withDuration: 0, animations: { [weak self] in
             self?.collectionView.endInteractiveMovement()
         })
