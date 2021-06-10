@@ -20,10 +20,17 @@ class ViewController: UIViewController {
     
     var layout = Layout.grid
     
+    var movingIndexPath: IndexPath?
+    
+    var touchedDx: CGFloat = 0.0
+    var touchedDy: CGFloat = 0.0
+    
     var nsPlainNoteProvider: NSPlainNoteProvider!
     
     var blockOperations: [BlockOperation] = []
 
+    var ignoreUpdate = false
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -86,6 +93,22 @@ class ViewController: UIViewController {
         collectionView.register(noteHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ViewController.NOTE_HEADER)
         
         collectionView.dataSource = self
+        
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+        collectionView?.addGestureRecognizer(gesture)
+    }
+    
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            self.began(gesture)
+        case .changed:
+            self.changed(gesture)
+        case .ended:
+            self.end(gesture)
+        default:
+            self.cancel(gesture)
+        }
     }
     
     private func setupLayout() {
@@ -317,6 +340,13 @@ extension ViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        if ignoreUpdate {
+            ignoreUpdate = false
+            self.blockOperations.removeAll(keepingCapacity: false)
+            self.collectionView.reloadData()
+            return
+        }
+        
         collectionView!.performBatchUpdates({ [weak self] () -> Void  in
             guard let self = self else { return }
             
@@ -330,8 +360,11 @@ extension ViewController: NSFetchedResultsControllerDelegate {
             self.blockOperations.removeAll(keepingCapacity: false)
 
             self.collectionView.reloadData()
-            // https://stackoverflow.com/a/46751421/72437
-            self.collectionView.numberOfItems(inSection: 0)
+            
+            if self.collectionView.numberOfSections > 0 {
+                // https://stackoverflow.com/a/46751421/72437
+                self.collectionView.numberOfItems(inSection: 0)
+            }
         })
     }
 }
@@ -379,7 +412,7 @@ extension ViewController: UICollectionViewDataSource {
         guard let noteCell = collectionView.dequeueReusableCell(withReuseIdentifier: ViewController.NOTE_CELL, for: indexPath) as? NoteCell else {
             fatalError()
         }
-
+        
         // TODO: Conversion required?
         noteCell.setup(nsPlainNote.toPlainNote())
         
@@ -412,4 +445,118 @@ extension ViewController: UICollectionViewDataSource {
         
         return noteCell
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+
+        // Switch the Items in the DataSource
+        
+        let minItem = min(sourceIndexPath.item, destinationIndexPath.item)
+        let maxItem = max(sourceIndexPath.item, destinationIndexPath.item)
+        let nsPlainNotes = nsPlainNoteProvider.getNSPlainNotes(sourceIndexPath.section)
+        
+        let sourcePlainNote = nsPlainNotes[sourceIndexPath.item]
+        
+        let order0 = nsPlainNotes[minItem].order
+        let order1 = nsPlainNotes[maxItem].order
+        var minOrder = min(order0, order1)
+        
+        var updates:[(objectID: NSManagedObjectID, order: Int64)] = []
+        
+        if (sourceIndexPath.item < destinationIndexPath.item) {
+            for item in minItem+1...maxItem {
+                let nsPlainNote = nsPlainNotes[item]
+                if minOrder != nsPlainNote.order {
+                    updates.append((nsPlainNote.objectID, minOrder))
+                }
+                minOrder = minOrder + 1
+            }
+            if minOrder != sourcePlainNote.order {
+                updates.append((sourcePlainNote.objectID, minOrder))
+            }
+        } else {
+            if minOrder != sourcePlainNote.order {
+                updates.append((sourcePlainNote.objectID, minOrder))
+            }
+            for item in minItem...maxItem-1 {
+                minOrder = minOrder + 1
+                let nsPlainNote = nsPlainNotes[item]
+                if minOrder != nsPlainNote.order {
+                    updates.append((nsPlainNote.objectID, minOrder))
+                }
+            }
+        }
+        
+        ignoreUpdate = true
+        
+        NSPlainNoteRepository.INSTANCE.updateOrders(updates)
+    }
+}
+
+extension ViewController : ReorderDelegate {
+    func began(_ gesture: UILongPressGestureRecognizer) {
+        let location = gesture.location(in: self.collectionView)
+        
+        guard let indexPath = self.collectionView.indexPathForItem(at: location) else {
+            return
+        }
+        
+        guard let noteCell = collectionView.cellForItem(at: indexPath as IndexPath) as? NoteCell else {
+            return
+        }
+        
+        let noteCellLocation = gesture.location(in: noteCell)
+        touchedDx = noteCellLocation.x - noteCell.frame.width/2
+        touchedDy = noteCellLocation.y - noteCell.frame.height/2
+        
+        self.movingIndexPath = indexPath
+        
+        collectionView.beginInteractiveMovementForItem(at: indexPath)
+
+        noteCell.liftUp()
+    }
+    
+    func changed(_ gesture: UILongPressGestureRecognizer) {
+        var location = gesture.location(in: collectionView)
+        
+        // Lock down the x position
+        // https://stackoverflow.com/questions/40116282/preventing-moving-uicollectionviewcell-by-its-center-when-dragging
+        location.x = location.x - touchedDx
+        location.y = location.y - touchedDy
+        
+        collectionView.updateInteractiveMovementTargetPosition(location)
+    }
+    
+    func end(_ gesture: UILongPressGestureRecognizer) {
+        UIView.animate(withDuration: 0, animations: { [weak self] in
+            self?.collectionView.endInteractiveMovement()
+        })
+        
+        if let movingIndexPath = self.movingIndexPath, let noteCell = collectionView.cellForItem(at: movingIndexPath as IndexPath) as? NoteCell {
+            noteCell.liftDown()
+        }
+        
+        self.movingIndexPath = nil
+
+        touchedDx = 0
+        touchedDy = 0
+    }
+    
+    func cancel(_ gesture: UILongPressGestureRecognizer) {
+        collectionView.endInteractiveMovement()
+        
+        if let movingIndexPath = self.movingIndexPath, let noteCell = collectionView.cellForItem(at: movingIndexPath as IndexPath) as? NoteCell {
+            noteCell.liftDown()
+        }
+        
+        self.movingIndexPath = nil
+        
+        touchedDx = 0
+        touchedDy = 0
+    }
+    
 }
