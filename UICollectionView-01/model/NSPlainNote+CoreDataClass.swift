@@ -17,10 +17,11 @@ public class NSPlainNote: NSManagedObject {
         self.title = plainNote.title
         self.body = plainNote.body
         self.pinned = plainNote.pinned
+        self.order = plainNote.order
         self.uuid = plainNote.uuid
     }
     
     func toPlainNote() -> PlainNote {
-        return PlainNote(title: title!, body: body!, pinned: pinned, uuid: uuid)
+        return PlainNote(title: title!, body: body!, pinned: pinned, order: order, uuid: uuid)
     }
 }
