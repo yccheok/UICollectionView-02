@@ -50,6 +50,20 @@ class NoteCell: UICollectionViewCell {
         
     }
 
+    func liftUp() {
+        self.layer.shadowOpacity = Constants.DRAG_N_MOVE_SHADOW_OPACITY
+        self.layer.shadowRadius = Constants.DRAG_N_MOVE_SHADOW_RADIUS
+        self.alpha = Constants.DRAG_N_MOVE_ALPHA
+        self.transform = CGAffineTransform(scaleX: Constants.DRAG_N_MOVE_SCALE, y: Constants.DRAG_N_MOVE_SCALE)
+    }
+    
+    func liftDown() {
+        self.layer.shadowOpacity = Constants.SHADOW_OPACITY
+        self.layer.shadowRadius = Constants.SHADOW_RADIUS
+        self.alpha = 1
+        self.transform = .identity
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         // Get the most recent bounds in layoutSubviews.
@@ -183,7 +197,7 @@ class NoteCell: UICollectionViewCell {
         updateGridLayout()
     }
     
-    private func updateListLayout() {       
+    private func updateListLayout() {
         let isTitleLabelEmpty = String.isNullOrEmpty(titleLabel.text)
         let isBodyLabelEmpty = String.isNullOrEmpty(bodyLabel.text)
         let isLabelLabelEmpty = String.isNullOrEmpty(labelLabel.text)
@@ -200,7 +214,7 @@ class NoteCell: UICollectionViewCell {
         bodyLabelAndBottomStackViewGreaterThanConstraint.isActive = false
         bodyLabel.numberOfLines = 0
 
-        if isTitleLabelEmpty {          
+        if isTitleLabelEmpty {
             titleLabelIsHidden = true
             titleLabelZeroHeightConstraint.isActive = true
         } else {
@@ -208,7 +222,7 @@ class NoteCell: UICollectionViewCell {
             titleLabelZeroHeightConstraint.isActive = false
         }
         
-        if isBodyLabelEmpty {           
+        if isBodyLabelEmpty {
             bodyLabelIsHidden = true
             bodyLabelZeroHeightConstraint.isActive = true
         } else {
@@ -219,12 +233,12 @@ class NoteCell: UICollectionViewCell {
         if isLabelLabelEmpty {
             labelLabelIsHidden = true
             labelLabelZeroHeightConstraint.isActive = true
-        } else {         
+        } else {
             labelLabelIsHidden = false
             labelLabelZeroHeightConstraint.isActive = false
         }
         
-        if isReminderLabelEmpty {           
+        if isReminderLabelEmpty {
             reminderLabelIsHidden = true
             reminderLabelZeroHeightConstraint.isActive = true
         } else {
