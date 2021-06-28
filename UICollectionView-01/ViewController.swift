@@ -93,6 +93,7 @@ class ViewController: UIViewController {
         collectionView.register(noteHeaderNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ViewController.NOTE_HEADER)
         
         collectionView.dataSource = self
+        collectionView.delegate = self
         
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
         collectionView?.addGestureRecognizer(gesture)
@@ -559,4 +560,18 @@ extension ViewController : ReorderDelegate {
         touchedDy = 0
     }
     
+}
+
+extension ViewController : UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+
+        let originalSection = originalIndexPath.section
+        let proposedSection = proposedIndexPath.section
+
+        if originalSection != proposedSection {
+            return originalIndexPath
+        }
+
+        return proposedIndexPath
+    }
 }
